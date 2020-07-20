@@ -1,2 +1,23 @@
-# newproject
-🆕 Template repository containing some basic stuff I use when starting a project.
+# `PROJECT_NAME`
+
+_`PROJECT_DESC`_
+
+## Installation
+
+`PROJECT_INSTALL_DESC`
+
+```bash
+`PROJECT_INSTALL_CMD`
+```
+
+## Usage
+
+```bash
+`PROJECT_USAGE_CMD`
+```
+
+<!-- 
+## Credits
+
+TODO: Uncomment and add credit information.
+-->
