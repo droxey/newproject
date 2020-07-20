@@ -16,7 +16,7 @@ _`PROJECT_DESC`_
 `PROJECT_USAGE_CMD`
 ```
 
-<!-- 
+<!--
 ## Credits
 
 TODO: Uncomment and add credit information.
