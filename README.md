@@ -1,4 +1,4 @@
-# `PROJECT_NAME`
+# 🆕 `PROJECT_NAME`
 
 _`PROJECT_DESC`_
 
