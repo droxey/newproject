@@ -33,10 +33,23 @@ bash <(curl -fsSL https://raw.githubusercontent.com/droxey/newproject/main/init.
 
 ## Flags
 
-| Flag | Required | Description |
-|------|----------|-------------|
-| `-n` | ✅ | Human-readable project name |
-| `-u` | ✅ | GitHub username |
-| `-r` | ✅ | Repository slug (directory name) |
-| `-t` | ✅ | GitHub personal access token with `repo` scope |
-| `-m` | ❌ | Project flavor: `go`, `node`, `python`, or `static` — pre-fills the `Dockerfile` |
+| Flag | Env var fallback | Required | Description |
+|------|-----------------|----------|-------------|
+| `-n` | `NEWPROJECT_NAME` | ✅ | Human-readable project name |
+| `-u` | `GITHUB_ACTOR` | ✅ | GitHub username |
+| `-r` | `NEWPROJECT_REPO` | ✅ | Repository slug (directory name) |
+| `-t` | `GITHUB_TOKEN` | ✅ | GitHub personal access token with `repo` scope |
+| `-m` | — | ❌ | Project flavor: `go`, `node`, `python`, or `static` — pre-fills the `Dockerfile` |
+
+### AI agent / CI usage
+
+Set credentials via environment variables to avoid exposing them in the process list or shell history:
+
+```bash
+export GITHUB_TOKEN="ghp_…"
+export GITHUB_ACTOR="your-github-username"
+export NEWPROJECT_NAME="My Go Service"
+export NEWPROJECT_REPO="my-go-service"
+
+bash <(curl -fsSL https://raw.githubusercontent.com/droxey/newproject/main/init.sh) -m go
+```

@@ -19,6 +19,15 @@ while getopts ":h:n:u:r:t:m:" opt; do
   esac
 done
 
+# Fall back to conventional environment variables when flags are not provided.
+# This lets AI agents (and CI) supply credentials without exposing them in the
+# process list or shell history.
+PROJECT_NAME="${PROJECT_NAME:-${NEWPROJECT_NAME:-}}"
+GITHUB_USER="${GITHUB_USER:-${GITHUB_ACTOR:-}}"
+GITHUB_REPO="${GITHUB_REPO:-${NEWPROJECT_REPO:-}}"
+# GITHUB_TOKEN is already a widely-used env var; honor it directly.
+GITHUB_TOKEN="${GITHUB_TOKEN:-}"
+
 function require_var() {
     if [ -z "${!1}" ]; then
         echo "[ERR] Missing required flag: $2" >&2; exit 2
@@ -47,7 +56,7 @@ if [ -d "$REPO_DIR" ]; then
 fi
 
 REPO_PATH="$GITHUB_USER/$GITHUB_REPO"
-REPO_REMOTE="git@github.com:$REPO_PATH"
+REPO_REMOTE="https://x-access-token:${GITHUB_TOKEN}@github.com/$REPO_PATH"
 REPO_URL="https://github.com/$REPO_PATH"
 
 function _copy_to_clipboard() {
