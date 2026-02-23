@@ -11,6 +11,11 @@
 
 > [[PROJECT_DESC]]
 
+## Features
+
+- [ ] Feature 1
+- [ ] Feature 2
+
 ## Quick Start
 
 ### Prerequisites
@@ -23,12 +28,27 @@
 2. Step two.
 3. Step three.
 
+## Development
+
+```bash
+cp .env.sample .env   # copy and edit environment variables
+```
+
+## Deployment
+
+> Deployed via [CapRover](https://caprover.com). See `captain-definition`.
+
 ## Table of Contents
 
 - [Overview](#overview)
 - [Features](#features)
 - [Quick Start](#quick-start)
-- [Get Started](#get-started)
+- [Development](#development)
+- [Deployment](#deployment)
 
 ---
+
+## License
+
+[MIT](LICENSE) © [[GITHUB_USER]]
 

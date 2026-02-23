@@ -1,0 +1,5 @@
+- **[[PROJECT_NAME]]**
+  - [Overview](docs/overview.md)
+  - [Quick Start](README.md#quick-start)
+  - [API / Docs](README.md#features)
+  - [Contributing](CONTRIBUTING.md)

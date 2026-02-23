@@ -22,10 +22,21 @@
 
 Run `init.sh` to make a new GitHub repo with this template:
 
-   ```bash
-   bash <(curl -fsSL https://raw.githubusercontent.com/droxey/newproject/main/init.sh) \
-     -n "My Project Name" \
-     -u your-github-username \
-     -r your-repo-name \
-     -t your-github-token
-   ```
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/droxey/newproject/main/init.sh) \
+  -n "My Go Service" \
+  -u your-github-username \
+  -r my-go-service \
+  -t your-github-token \
+  -m go
+```
+
+## Flags
+
+| Flag | Required | Description |
+|------|----------|-------------|
+| `-n` | ✅ | Human-readable project name |
+| `-u` | ✅ | GitHub username |
+| `-r` | ✅ | Repository slug (directory name) |
+| `-t` | ✅ | GitHub personal access token with `repo` scope |
+| `-m` | ❌ | Project flavor: `go`, `node`, `python`, or `static` — pre-fills the `Dockerfile` |

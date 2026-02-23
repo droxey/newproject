@@ -1,0 +1,8 @@
+{
+  "name": "[[PROJECT_NAME]]",
+  "description": "[[PROJECT_DESC]]",
+  "version": "0.1.0",
+  "author": "[[GITHUB_USER]]",
+  "repository": "https://github.com/[[GITHUB_USER]]/[[GITHUB_REPO]]",
+  "skills": []
+}

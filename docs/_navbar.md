@@ -1,0 +1,2 @@
+- [[[PROJECT_NAME]]](/)
+- [GitHub](https://github.com/[[GITHUB_USER]]/[[GITHUB_REPO]])

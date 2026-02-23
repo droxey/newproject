@@ -1,0 +1,6 @@
+{
+  "name": "[[PROJECT_NAME]]",
+  "image": "mcr.microsoft.com/devcontainers/universal:2",
+  "features": {},
+  "postCreateCommand": "cp .env.sample .env 2>/dev/null || true"
+}
