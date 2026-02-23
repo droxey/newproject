@@ -277,14 +277,14 @@ The `docs/_sidebar.md` and `docs/_navbar.md` are empty. A minimal populated scaf
 
 > Goal: Fix all bugs, make the script POSIX-portable and `shellcheck`-clean.
 
-- [ ] **1.1** Remove all debug `echo` statements (`lines 42–53` in `init.sh`)
-- [ ] **1.2** Replace `exit 1` at end of script with `exit 0`
-- [ ] **1.3** Add `require_var` input validation function after `getopts` block
-- [ ] **1.4** Update GitHub API `Accept` header from `baptiste-preview` to `application/vnd.github+json` and add `X-GitHub-Api-Version: 2022-11-28`
-- [ ] **1.5** Replace `pbcopy` / `open` with cross-platform `_copy_to_clipboard` and `_open_url` helpers
-- [ ] **1.6** Fix `sed -i` portability: detect macOS (`darwin`) and use `sed -i ''`; use `sed -i` on Linux
-- [ ] **1.7** Double-quote all variable expansions in `parse`, `clone`, `commit` functions
-- [ ] **1.8** Run `shellcheck init.sh` and fix all warnings to zero
+- [x] **1.1** Remove all debug `echo` statements (`lines 42–53` in `init.sh`)
+- [x] **1.2** Replace `exit 1` at end of script with `exit 0`
+- [x] **1.3** Add `require_var` input validation function after `getopts` block
+- [x] **1.4** Update GitHub API `Accept` header from `baptiste-preview` to `application/vnd.github+json` and add `X-GitHub-Api-Version: 2022-11-28`
+- [x] **1.5** Replace `pbcopy` / `open` with cross-platform `_copy_to_clipboard` and `_open_url` helpers
+- [x] **1.6** Fix `sed -i` portability: detect macOS (`darwin`) and use `sed -i ''`; use `sed -i` on Linux
+- [x] **1.7** Double-quote all variable expansions in `parse`, `clone`, `commit` functions
+- [x] **1.8** Run `shellcheck init.sh` and fix all warnings to zero
 
 ---
 
@@ -292,12 +292,12 @@ The `docs/_sidebar.md` and `docs/_navbar.md` are empty. A minimal populated scaf
 
 > Goal: All `[[TOKEN]]` occurrences are resolved for the tokens init.sh knows about.
 
-- [ ] **2.1** Add `parse "[[GITHUB_USER]]" "$GITHUB_USER"` to `cleanup()` in `init.sh`
-- [ ] **2.2** Fix `hasValue` → `isPlaceholder` logic inversion in `index.html` (lines 19–27)
-- [ ] **2.3** Replace hardcoded `'droxey/'` prefix in `index.html` with `'[[GITHUB_USER]]/'`
-- [ ] **2.4** Verify `_README.md` uses `[[GITHUB_USER]]` in the license line and any author references
-- [ ] **2.5** Update `index.html` `<meta name="author">` to use `[[GITHUB_USER]]` instead of hardcoded `dani@bitoriented.com`
-- [ ] **2.6** Smoke-test: after `cleanup()` runs, `grep -r '\[\[' $REPO_DIR` should return only `[[PROJECT_DESC]]` and `[[PROJECT_LOGO]]`
+- [x] **2.1** Add `parse "[[GITHUB_USER]]" "$GITHUB_USER"` to `cleanup()` in `init.sh`
+- [x] **2.2** Fix `hasValue` → `isPlaceholder` logic inversion in `index.html` (lines 19–27)
+- [x] **2.3** Replace hardcoded `'droxey/'` prefix in `index.html` with `'[[GITHUB_USER]]/'`
+- [x] **2.4** Verify `_README.md` uses `[[GITHUB_USER]]` in the license line and any author references
+- [x] **2.5** Update `index.html` `<meta name="author">` to use `[[GITHUB_USER]]` instead of hardcoded `dani@bitoriented.com`
+- [x] **2.6** Smoke-test: after `cleanup()` runs, `grep -r '\[\[' $REPO_DIR` should return only `[[PROJECT_DESC]]` and `[[PROJECT_LOGO]]`
 
 ---
 
@@ -305,15 +305,15 @@ The `docs/_sidebar.md` and `docs/_navbar.md` are empty. A minimal populated scaf
 
 > Goal: Every generated repo starts with CI and is Codespaces-ready.
 
-- [ ] **3.1** Create `.github/workflows/ci.yml` in the template that:
+- [x] **3.1** Create `.github/workflows/ci.yml` in the template that:
   - Runs `shellcheck` on any `*.sh` files found
   - Validates that no `[[TOKEN]]` placeholders remain in non-template files
   - Triggers on `push` and `pull_request` to `main`
-- [ ] **3.2** Create `.github/ISSUE_TEMPLATE/bug_report.md` with standard fields
-- [ ] **3.3** Create `.github/ISSUE_TEMPLATE/feature_request.md` with standard fields
-- [ ] **3.4** Create `.github/pull_request_template.md`
-- [ ] **3.5** Create `.devcontainer/devcontainer.json` using `mcr.microsoft.com/devcontainers/universal:2` image
-- [ ] **3.6** Add `.github/copilot-instructions.md` stub with `[[PROJECT_NAME]]` / `[[PROJECT_DESC]]` tokens so Copilot has context for each generated project
+- [x] **3.2** Create `.github/ISSUE_TEMPLATE/bug_report.md` with standard fields
+- [x] **3.3** Create `.github/ISSUE_TEMPLATE/feature_request.md` with standard fields
+- [x] **3.4** Create `.github/pull_request_template.md`
+- [x] **3.5** Create `.devcontainer/devcontainer.json` using `mcr.microsoft.com/devcontainers/universal:2` image
+- [x] **3.6** Add `.github/copilot-instructions.md` stub with `[[PROJECT_NAME]]` / `[[PROJECT_DESC]]` tokens so Copilot has context for each generated project
 
 ---
 
@@ -321,13 +321,13 @@ The `docs/_sidebar.md` and `docs/_navbar.md` are empty. A minimal populated scaf
 
 > Goal: A generated project has a working Docsify site with zero placeholder stubs.
 
-- [ ] **4.1** Populate `docs/_sidebar.md` with a minimal nav skeleton (Overview, Quick Start, API/Docs, Contributing)
-- [ ] **4.2** Populate `docs/_navbar.md` with links to `[[GITHUB_REPO]]` and GitHub repo
-- [ ] **4.3** Add `[[PROJECT_NAME]]` and `[[PROJECT_DESC]]` tokens to `_sidebar.md` and `_navbar.md` so they are replaced on generation
-- [ ] **4.4** Add a `docs/overview.md` starter page with `[[PROJECT_DESC]]` content
-- [ ] **4.5** Expand `_README.md` template: add Features checklist, Development section, Deployment (CapRover) section, License line with `[[GITHUB_USER]]`
-- [ ] **4.6** Pin Docsify CDN scripts in `index.html` to specific semver ranges instead of `@0` / latest to prevent breaking changes
-- [ ] **4.7** Fix unclosed `<script>` tag in `index.html` (line 92 opens `<script>` with no content, line 93 closes `</body>` — missing `</script>`)
+- [x] **4.1** Populate `docs/_sidebar.md` with a minimal nav skeleton (Overview, Quick Start, API/Docs, Contributing)
+- [x] **4.2** Populate `docs/_navbar.md` with links to `[[GITHUB_REPO]]` and GitHub repo
+- [x] **4.3** Add `[[PROJECT_NAME]]` and `[[PROJECT_DESC]]` tokens to `_sidebar.md` and `_navbar.md` so they are replaced on generation
+- [x] **4.4** Add a `docs/overview.md` starter page with `[[PROJECT_DESC]]` content
+- [x] **4.5** Expand `_README.md` template: add Features checklist, Development section, Deployment (CapRover) section, License line with `[[GITHUB_USER]]`
+- [x] **4.6** Pin Docsify CDN scripts in `index.html` to specific semver ranges instead of `@0` / latest to prevent breaking changes
+- [x] **4.7** Fix unclosed `<script>` tag in `index.html` (line 92 opens `<script>` with no content, line 93 closes `</body>` — missing `</script>`)
 
 ---
 
@@ -335,11 +335,11 @@ The `docs/_sidebar.md` and `docs/_navbar.md` are empty. A minimal populated scaf
 
 > Goal: Support droxey's active AI-agent and Copilot-heavy workflow.
 
-- [ ] **5.1** Add an `AGENTS.md` or `.github/copilot-instructions.md` that explains the `[[TOKEN]]` system to Copilot / AI agents operating inside generated repos
-- [ ] **5.2** Add a `CONTRIBUTING.md` template stub that references Copilot coding agent conventions
-- [ ] **5.3** Consider adding an optional `-m` flag to `init.sh` for selecting a "flavor" (e.g., `go`, `node`, `python`, `static`) that copies a language-specific `Dockerfile` stub
-- [ ] **5.4** Add a `Makefile` stub with common targets (`help`, `dev`, `build`, `deploy`) so Copilot agent can discover project entry points
-- [ ] **5.5** Evaluate adding an `.openclaw/skill.json` stub for OpenClaw skill scaffolding (given `agentadventure` / `clincher` patterns)
+- [x] **5.1** Add an `AGENTS.md` or `.github/copilot-instructions.md` that explains the `[[TOKEN]]` system to Copilot / AI agents operating inside generated repos
+- [x] **5.2** Add a `CONTRIBUTING.md` template stub that references Copilot coding agent conventions
+- [x] **5.3** Consider adding an optional `-m` flag to `init.sh` for selecting a "flavor" (e.g., `go`, `node`, `python`, `static`) that copies a language-specific `Dockerfile` stub
+- [x] **5.4** Add a `Makefile` stub with common targets (`help`, `dev`, `build`, `deploy`) so Copilot agent can discover project entry points
+- [x] **5.5** Evaluate adding an `.openclaw/skill.json` stub for OpenClaw skill scaffolding (given `agentadventure` / `clincher` patterns)
 
 ---
 
@@ -347,7 +347,7 @@ The `docs/_sidebar.md` and `docs/_navbar.md` are empty. A minimal populated scaf
 
 > Goal: Confirm everything works end-to-end before tagging `v2.0.0`.
 
-- [ ] **6.1** Run `shellcheck init.sh` — must pass with zero warnings
+- [x] **6.1** Run `shellcheck init.sh` — must pass with zero warnings
 - [ ] **6.2** Run `init.sh` in dry-run mode against a test GitHub org and verify:
   - Repo created successfully (HTTP 201)
   - All `[[TOKEN]]` placeholders replaced except `[[PROJECT_DESC]]` and `[[PROJECT_LOGO]]`
@@ -356,6 +356,6 @@ The `docs/_sidebar.md` and `docs/_navbar.md` are empty. A minimal populated scaf
   - `init.sh` absent from generated repo
   - Docsify site loads in browser with correct project name
 - [ ] **6.3** Test on both macOS and Linux (Ubuntu via GitHub Actions matrix)
-- [ ] **6.4** Update `README.md` in `newproject` itself to reflect new flags and capabilities
+- [x] **6.4** Update `README.md` in `newproject` itself to reflect new flags and capabilities
 - [ ] **6.5** Tag release `v2.0.0` with changelog summarizing all changes
-- [ ] **6.6** Update `init.sh` curl install command in README to point to `main` branch (already done; verify)
+- [x] **6.6** Update `init.sh` curl install command in README to point to `main` branch (already done; verify)
