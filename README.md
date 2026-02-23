@@ -13,16 +13,14 @@
 
 > Bootstrap a new GitHub repository — complete with README, Dockerfile, and Docsify docs — with a single shell command.
 
-## Quick Start
+## Prerequisites
 
-### Prerequisites
-
-- A [GitHub personal access token](https://github.com/settings/tokens) with `repo` scope
 - `bash`, `curl`, and `git` installed
+- A [personal access token](https://github.com/settings/tokens) with `repo` scope
 
-### Get Started
+## Get Started
 
-1. Run the init script:
+Run `init.sh` to make a new GitHub repo with this template:
 
    ```bash
    bash <(curl -fsSL https://raw.githubusercontent.com/droxey/newproject/main/init.sh) \
@@ -31,14 +29,3 @@
      -r your-repo-name \
      -t your-github-token
    ```
-
-2. Open the newly created repository on GitHub and customize `README.md`, `Dockerfile`, and `docs/`.
-
-## Table of Contents
-
-- [Overview](#newproject)
-- [Quick Start](#quick-start)
-- [Get Started](#get-started)
-
----
-
