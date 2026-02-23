@@ -1,5 +1,34 @@
-# 🆕 [[PROJECT_NAME]]
+<p align="center">
+  <strong>[[GITHUB_REPO]]</strong><br/>[[PROJECT_DESC]]
+</p>
 
-[![GitHub Actions](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fatrox%2Fsync-dotenv%2Fbadge&style=flat)](https://actions-badge.atrox.dev/atrox/sync-dotenv/goto) [![CircleCI](https://img.shields.io/circleci/project/droxey/newproject.svg?style=flat&logo=circleci&label=Circle%20CI)](https://circleci.com/gh/droxey/newproject)
+<p align="center">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="License: MIT"></a>
+  <img src="https://img.shields.io/badge/platform-linux%20%7C%20macOS-lightgrey?style=flat-square" alt="Platform">
+</p>
 
-_[[PROJECT_DESC]]_
+---
+
+> [[PROJECT_DESC]]
+
+## Quick Start
+
+### Prerequisites
+
+- List prerequisites here.
+
+### Get Started
+
+1. Step one.
+2. Step two.
+3. Step three.
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Features](#features)
+- [Quick Start](#quick-start)
+- [Get Started](#get-started)
+
+---
+

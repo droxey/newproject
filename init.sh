@@ -107,7 +107,7 @@ function commit() {
     git remote add origin $REPO_REMOTE
     git add .
     git commit -m "Initial commit"
-    git push origin master --force
+    git push origin main --force
     cd $EXEC_DIR
 }
 
