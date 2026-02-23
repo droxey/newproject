@@ -1,12 +1,45 @@
-# newproject
+<p align="center">
+  <strong>newproject</strong><br/>A quick way for <a href="https://github.com/droxey">@droxey</a> to scaffold new GitHub repositories from a template.
+</p>
 
-[![GitHub Actions](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fatrox%2Fsync-dotenv%2Fbadge&style=flat)](https://actions-badge.atrox.dev/atrox/sync-dotenv/goto) [![CircleCI](https://img.shields.io/circleci/project/droxey/newproject.svg?style=flat&logo=circleci&label=Circle%20CI)](https://circleci.com/gh/droxey/newproject)
+<p align="center">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="License: MIT"></a>
+  <img src="https://img.shields.io/badge/shell-bash-4EAA25?style=flat-square&logo=gnubash&logoColor=white" alt="Bash">
+  <img src="https://img.shields.io/badge/docker-ready-2496ED?style=flat-square&logo=docker&logoColor=white" alt="Docker">
+  <img src="https://img.shields.io/badge/docs-docsify-42b983?style=flat-square" alt="Docs: Docsify">
+  <img src="https://img.shields.io/badge/platform-linux%20%7C%20macOS-lightgrey?style=flat-square" alt="Platform">
+</p>
 
-_A quick and easy way for [@droxey](https://github.com/droxey) to create new projects._
+---
 
-## Create New Project
+> Bootstrap a new GitHub repository — complete with README, Dockerfile, and Docsify docs — with a single shell command.
 
-```bash
-wget -O - https://raw.githubusercontent.com/droxey/newproject/master/init.sh
-```
+## Quick Start
+
+### Prerequisites
+
+- A [GitHub personal access token](https://github.com/settings/tokens) with `repo` scope
+- `bash`, `curl`, and `git` installed
+
+### Get Started
+
+1. Run the init script:
+
+   ```bash
+   bash <(curl -fsSL https://raw.githubusercontent.com/droxey/newproject/main/init.sh) \
+     -n "My Project Name" \
+     -u your-github-username \
+     -r your-repo-name \
+     -t your-github-token
+   ```
+
+2. Open the newly created repository on GitHub and customize `README.md`, `Dockerfile`, and `docs/`.
+
+## Table of Contents
+
+- [Overview](#newproject)
+- [Quick Start](#quick-start)
+- [Get Started](#get-started)
+
+---
 
