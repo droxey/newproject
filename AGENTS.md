@@ -40,7 +40,7 @@ Files in this repository may contain `[[TOKEN_NAME]]` placeholders. These are re
 
 | # | Severity | Status | Blocker | Fix |
 |---|---|---|---|---|
-| 1 | 🔴 | ✅ fixed | **Secret leak** — passing `GITHUB_TOKEN` via `-t` flag exposes it in shell history and process list | Read from env var; accept `-t` only as an override |
+| 1 | 🔴 | ✅ fixed | **Secret leak** — passing `GITHUB_TOKEN` via `-t` flag exposes it in shell history and process list | Read from env var as fallback; `-t` flag takes precedence when provided |
 | 2 | 🔴 | ✅ fixed | **Wrong exit code** — `exit 1` on success causes agents to retry/abort | Replace with `exit 0` |
 | 3 | 🟠 | ✅ fixed | **SSH-only clone** — agent sandboxes have no SSH key; clone and push fail silently | Use HTTPS + `x-access-token:$GITHUB_TOKEN` in remote URL |
 | 4 | 🟠 | ✅ fixed | **No env var fallbacks** — agents can't safely inline secrets as flags | `-n`/`-u`/`-r`/`-t` each fall back to `NEWPROJECT_NAME`, `GITHUB_ACTOR`, `NEWPROJECT_REPO`, `GITHUB_TOKEN` |
