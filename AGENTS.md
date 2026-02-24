@@ -30,11 +30,11 @@ Files in this repository may contain `[[TOKEN_NAME]]` placeholders. These are re
 
 | Agent | Shell access | Key blockers |
 |---|---|---|
-| GitHub Copilot Coding Agent | ✅ | secret leak via `-t` flag, SSH-only clone, macOS commands |
-| Claude (computer-use / bash tool) | ✅ | secret leak, SSH-only clone, `exit 1` on success |
+| GitHub Copilot Coding Agent | ✅ | Previously blocked by: secret leak via `-t` flag, SSH-only clone, macOS commands (all now fixed in `init.sh`) |
+| Claude (computer-use / bash tool) | ✅ | Previously blocked by: secret leak, SSH-only clone, `exit 1` on success (all now fixed in `init.sh`) |
 | ChatGPT (code interpreter) | ⚠️ no network | cannot reach GitHub API at all |
-| Grok | ⚠️ limited | secret leak, no persistent filesystem |
-| Gemini | ⚠️ limited | secret leak, SSH-only clone |
+| Grok | ⚠️ limited | Previously blocked by: secret leak (fixed in `init.sh`); still limited by no persistent filesystem |
+| Gemini | ⚠️ limited | Previously blocked by: secret leak, SSH-only clone (both fixed in `init.sh`) |
 
 ### Blockers
 
