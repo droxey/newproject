@@ -26,7 +26,6 @@ PROJECT_NAME="${PROJECT_NAME:-${NEWPROJECT_NAME:-}}"
 GITHUB_USER="${GITHUB_USER:-${GITHUB_ACTOR:-}}"
 GITHUB_REPO="${GITHUB_REPO:-${NEWPROJECT_REPO:-}}"
 # GITHUB_TOKEN is already a widely-used env var; honor it directly.
-GITHUB_TOKEN="${GITHUB_TOKEN:-}"
 
 function require_var() {
     if [ -z "${!1}" ]; then
