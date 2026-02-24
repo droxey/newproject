@@ -56,8 +56,8 @@ if [ -d "$REPO_DIR" ]; then
 fi
 
 REPO_PATH="$GITHUB_USER/$GITHUB_REPO"
-REPO_REMOTE="https://x-access-token:${GITHUB_TOKEN}@github.com/$REPO_PATH"
 REPO_URL="https://github.com/$REPO_PATH"
+REPO_REMOTE="$REPO_URL"
 
 function _copy_to_clipboard() {
     if command -v pbcopy &>/dev/null; then
