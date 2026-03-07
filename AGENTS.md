@@ -24,78 +24,118 @@ Files in this repository may contain `[[TOKEN_NAME]]` placeholders. These are re
 
 ---
 
-## `init.sh` — Agent Compatibility
+## `init.sh` — AI Agent Usage Analysis
 
-### Per-agent compatibility table
+### Current State: What Works ✅
 
-| Agent | Shell access | Key blockers |
-|---|---|---|
-| GitHub Copilot Coding Agent | ✅ | Previously blocked by: secret leak via `-t` flag, SSH-only clone, macOS commands (all now fixed in `init.sh`) |
-| Claude (computer-use / bash tool) | ✅ | Previously blocked by: secret leak, SSH-only clone, `exit 1` on success (all now fixed in `init.sh`) |
-| ChatGPT (code interpreter) | ⚠️ no network | cannot reach GitHub API at all |
-| Grok | ⚠️ limited | Previously blocked by: secret leak (fixed in `init.sh`); still limited by no persistent filesystem |
-| Gemini | ⚠️ limited | Previously blocked by: secret leak, SSH-only clone (both fixed in `init.sh`) |
+| Feature | Notes |
+|---|---|
+| Flag-driven interface (`-n -u -r -t -m`) | All inputs are explicit CLI flags — no interactive prompts. |
+| Input validation via `require_var` | Missing flags produce a clear `[ERR]` message and `exit 2`. |
+| Cross-platform `sed -i` | `SED_INPLACE` array auto-detects macOS vs. Linux. |
+| Cross-platform clipboard/browser helpers | `_copy_to_clipboard` and `_open_url` gracefully no-op in headless environments. |
+| Language flavor selection (`-m go\|node\|python\|static`) | Agents can request a specific Dockerfile template without editing files manually. |
+| Token replacement (`[[PROJECT_NAME]]`, `[[GITHUB_REPO]]`, `[[GITHUB_USER]]`) | Three of five defined tokens are auto-replaced. |
+| Structured `[NEW]` / `[ERR]` prefixes | Output is parseable with basic `grep`/pattern matching. |
+| `exit 0` on success | CI/agent orchestrators can reliably detect completion. |
 
-### Blockers
+### Current State: What Doesn't Work ❌
 
-| # | Severity | Status | Blocker | Fix |
-|---|---|---|---|---|
-| 1 | 🔴 | ✅ fixed | **Secret leak** — passing `GITHUB_TOKEN` via `-t` flag exposes it in shell history and process list | Read from env var as fallback; `-t` flag takes precedence when provided |
-| 2 | 🔴 | ✅ fixed | **Wrong exit code** — `exit 1` on success causes agents to retry/abort | Replace with `exit 0` |
-| 3 | 🟠 | ✅ fixed | **SSH-only clone** — agent sandboxes have no SSH key; clone and push fail silently | Use HTTPS + `x-access-token:$GITHUB_TOKEN` in remote URL |
-| 4 | 🟠 | ✅ fixed | **No env var fallbacks** — agents can't safely inline secrets as flags | `-n`/`-u`/`-r`/`-t` each fall back to `NEWPROJECT_NAME`, `GITHUB_ACTOR`, `NEWPROJECT_REPO`, `GITHUB_TOKEN` |
-| 5 | 🟠 | ✅ fixed | **macOS-only commands** — `pbcopy`/`open` abort on Linux containers | OS-aware helpers that degrade silently |
-| 6 | 🟡 | ✅ fixed | **Deprecated API header** — `baptiste-preview` removed from GitHub API | Use `application/vnd.github+json` + `X-GitHub-Api-Version: 2022-11-28` |
-| 7 | 🟡 | ⬜ open | **No dry-run** — every test invocation creates a real repo | Add `--dry-run` / `-d` flag |
-| 8 | 🟢 | ⬜ open | **No machine-readable output** — agents benefit from structured output | Add `-j` JSON flag |
+| # | Blocker | Location | Impact |
+|---|---|---|---|
+| B1 | **SSH-only git clone** — uses `git@github.com:` URL; agent sandboxes rarely have SSH keys configured. | `init.sh:50,102` | 🔴 Script fails silently in any headless/containerised agent context without SSH keys. |
+| B2 | **No dry-run mode** — the script immediately calls `create()` (GitHub API) and `commit()` (force-push). There is no way to preview or validate without side effects. | `init.sh:200` | 🔴 Agents cannot test or validate invocation without mutating GitHub state. |
+| B3 | **`-t` flag exposes the token in the process list** — any `ps aux` call while the script runs reveals `$GITHUB_TOKEN` in the argument vector. | `init.sh:13` | 🔴 Security risk in multi-tenant agent environments (e.g., GitHub-hosted runners). |
+| B4 | **No environment-variable fallback for flags** — credentials cannot be injected via `GITHUB_TOKEN=… ./init.sh …`, requiring every caller to pass the token as a CLI argument. | `init.sh:3-20` | 🟠 Agents using repository secrets (Actions, Codespaces) must reconstruct the flag form. |
+| B5 | **Hard-coded clone destination** — clones to `$HOME/dev/repos` if that directory exists, otherwise `$PWD`. Agents typically need an explicit, predictable target path. | `init.sh:34-38,44` | 🟠 Output path is non-deterministic; agents cannot reliably reference generated files afterward. |
+| B6 | **`git push --force` to `main`** — the initial commit force-pushes the default branch. In protected-branch or fine-grained-token scenarios this will fail with an opaque error. | `init.sh:196` | 🟠 Newer fine-grained personal access tokens (PATs) often disallow force-push. |
+| B7 | **No machine-readable success output** — the script produces human-readable prose; there is no JSON or key=value summary for downstream consumers. | `init.sh:82-85` | 🟡 Agents must screen-scrape to know the final repo URL, clone path, or status. |
+| B8 | **`-h` flag emits no usage text** — prints the literal string `"-h"` and exits instead of showing a help/usage message. | `init.sh:5` | 🟡 Agents relying on `--help` introspection receive no usable information. |
+| B9 | **`init.sh` self-deletes** — `cleanup()` removes itself from the generated repo (`rm -f "$REPO_DIR/init.sh"`). Re-running or debugging the generation step requires re-downloading the script. | `init.sh:187` | 🟡 Acceptable for human users; agents that re-invoke the script after clone will fail to find it. |
+| B10 | **`[[PROJECT_DESC]]` and `[[PROJECT_LOGO]]` are never replaced** — generated repos always contain unfilled placeholders in visible locations (`index.html`, `_README.md`, `copilot-instructions.md`). | `init.sh:176-188` | 🟡 Agents operating inside a generated repo may propagate placeholder strings into commits. |
 
-### Recommended invocation for agents (after Phase A fixes)
+---
+
+### Required Changes to Support Agent-Driven Invocation
+
+#### RC1 — Support HTTPS clone (and env-var token injection)
+
+Replace the SSH remote with an HTTPS remote that embeds the token, and accept `GITHUB_TOKEN` as an environment variable so agents can inject credentials via secrets rather than CLI flags.
 
 ```bash
-# Set credentials in environment — never pass GITHUB_TOKEN as a flag
-export GITHUB_TOKEN="ghp_…"
-export GITHUB_ACTOR="your-username"
-export NEWPROJECT_NAME="My Project"
-export NEWPROJECT_REPO="my-repo"
+# Use HTTPS with token for agent/CI environments
+REPO_REMOTE="https://${GITHUB_TOKEN}@github.com/${REPO_PATH}.git"
 
-bash init.sh          # reads all values from env vars
-# or override selectively:
-bash init.sh -n "My Project" -u your-username -r my-repo
+# Accept env-var fallback so -t is optional when GITHUB_TOKEN is set
+GITHUB_TOKEN="${GITHUB_TOKEN:-}"
+# (then require_var still fires if both are absent)
+```
+
+#### RC2 — Add a `--dry-run` / `-d` flag
+
+Skip `create()` and `commit()` when `-d` is passed; run only `clone()` and `cleanup()` against a local directory. This lets agents validate token replacement and file structure without touching GitHub.
+
+```bash
+# getopts addition
+d) DRY_RUN=1 ;;
+
+# main pipeline
+if [ -z "$DRY_RUN" ]; then
+    create && clone && cleanup && commit
+else
+    clone && cleanup
+fi
+```
+
+#### RC3 — Accept an explicit output directory flag (`-o`)
+
+Allow callers to specify exactly where the repo is cloned. Removes the `$HOME/dev/repos` heuristic.
+
+```bash
+o) CLONE_DIR="$OPTARG" ;;
+```
+
+#### RC4 — Emit a structured summary on success
+
+After a successful run, write a key=value (or JSON) block to stdout so agents can parse results without screen-scraping prose.
+
+```bash
+# At end of successful pipeline
+echo "REPO_URL=$REPO_URL"
+echo "REPO_DIR=$REPO_DIR"
+echo "FLAVOR=${FLAVOR:-default}"
+```
+
+#### RC5 — Fix `-h` to emit real usage text
+
+```bash
+h)
+    echo "Usage: init.sh -n <name> -u <user> -r <repo> -t <token> [-m go|node|python|static] [-d] [-o <dir>]"
+    exit 0
+    ;;
+```
+
+#### RC6 — Replace force-push with a branch-safe push
+
+```bash
+# Replace: git push origin main --force
+# With:
+git push -u origin main
 ```
 
 ---
 
-## Implementation Roadmap
+### Prioritized TODO Checklist
 
-### Phase A — Fix hard blockers (prerequisite for agent use)
+> Items are ordered by severity of agent-blocking impact. Security issues are addressed first.
 
-- [x] Remove debug `echo` statements that leak secrets
-- [x] Replace `exit 1` with `exit 0` at end of successful run
-- [x] Replace `pbcopy`/`open` with cross-platform `_copy_to_clipboard`/`_open_url` helpers
-- [x] Update GitHub API `Accept` header to `application/vnd.github+json` + `X-GitHub-Api-Version: 2022-11-28`
-- [x] Add `require_var` input validation after `getopts`
-- [x] Add env var fallbacks: `-n` → `NEWPROJECT_NAME`, `-u` → `GITHUB_ACTOR`, `-r` → `NEWPROJECT_REPO`, `-t` → `GITHUB_TOKEN`
-- [x] Switch clone and push from SSH (`git@github.com:…`) to HTTPS (`https://x-access-token:TOKEN@github.com/…`)
-
-### Phase B — Reliability
-
-- [x] Input validation via `require_var`
-- [x] `sed -i` portability (macOS `-i ''` vs Linux `-i`)
-- [x] `shellcheck` clean (zero warnings)
-
-### Phase C — Agent DX
-
-- [ ] Add `--dry-run` / `-d` flag that prints planned actions without making API calls or cloning
-- [x] `.devcontainer/devcontainer.json` for Codespaces / Copilot agent contexts
-- [x] `.github/copilot-instructions.md` stub in generated template
-- [x] `Makefile` with `help`, `dev`, `build`, `deploy` targets
-- [ ] `-j` JSON output flag for machine-readable results
-
-### Phase D — Workflow dispatch
-
-- [ ] Add `.github/workflows/init.yml` with `workflow_dispatch` inputs so agents with GitHub API access can trigger project creation without any shell access
-
-### Phase E — README + smoke tests
-
-- [x] Update `README.md` to document new flags and env var fallbacks
-- [ ] Per-agent smoke tests (GitHub Actions matrix: ubuntu + macOS)
+- [ ] **P0 — Security** `[B3]` Move token out of process-argument vector: accept `GITHUB_TOKEN` env var; keep `-t` as an optional override that writes to the variable, not to the argument list directly.
+- [ ] **P1 — Correctness** `[B1]` Switch git clone and remote URLs from SSH (`git@github.com:`) to HTTPS (`https://github.com/`) with token embedding, so the script works in any containerized or sandboxed agent environment.
+- [ ] **P1 — Correctness** `[B6]` Replace `git push origin main --force` with `git push -u origin main` to respect branch protection rules and fine-grained PAT restrictions.
+- [ ] **P2 — Testability** `[B2]` Add a `-d` (dry-run) flag that skips `create()` and `commit()` so agents (and humans) can validate token replacement locally without mutating GitHub state.
+- [ ] **P2 — Reliability** `[B5]` Add a `-o <dir>` flag for an explicit clone destination; remove the `$HOME/dev/repos` auto-detection heuristic.
+- [ ] **P3 — Integration** `[B4]` Accept all four credentials (`GITHUB_TOKEN`, `GITHUB_USER`, `GITHUB_REPO`, `PROJECT_NAME`) as environment variable fallbacks so agents using repository secrets don't need to reconstruct CLI flags.
+- [ ] **P3 — Integration** `[B7]` Emit a structured `KEY=VALUE` summary block at the end of a successful run so agent orchestrators can parse `REPO_URL` and `REPO_DIR` without screen-scraping.
+- [ ] **P4 — UX** `[B8]` Replace the `-h` stub with a real usage/help message listing all flags, defaults, and examples.
+- [ ] **P4 — UX** `[B10]` Document clearly (here and in `copilot-instructions.md`) that `[[PROJECT_DESC]]` and `[[PROJECT_LOGO]]` require a manual post-generation step; optionally prompt for them interactively when not in dry-run mode.
+- [ ] **P5 — Maintenance** `[B9]` Consider keeping `init.sh` in the generated repo (or replacing its content with a no-op stub) instead of deleting it, to allow re-generation or debugging.
